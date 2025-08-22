@@ -1,4 +1,4 @@
-import { PageToHtmlTask } from "@/types/workflow/task/PageToHtml";
+import { PageToHtmlTask } from "@/lib/workflow/task/PageToHtml";
 import { ExecutionEnvironment } from "@/types/executor";
 
 export async function PageToHtmlExecutor(

@@ -1,4 +1,4 @@
-import { ExtractTextFromElementTask } from "@/types/workflow/task/ExtractTextFromElement";
+import { ExtractTextFromElementTask } from "@/lib/workflow/task/ExtractTextFromElement";
 import { ExecutionEnvironment } from "@/types/executor";
 import * as cheerio from "cheerio";
 

@@ -4,6 +4,7 @@ import {
   CircleCheckIcon,
   Loader2Icon,
 } from "lucide-react";
+import { ExecutionPhaseStatus } from "@/types/workflow";
 
 export default function PhaseStatusBadge({
   status,

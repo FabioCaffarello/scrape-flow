@@ -10,7 +10,6 @@ import {
   Connection,
   Edge,
   addEdge,
-  hasCycle,
   getOutgoers,
 } from "@xyflow/react";
 import { AppNode } from "@/types/appNode";
@@ -22,7 +21,7 @@ import { useReactFlow } from "@xyflow/react";
 import { useEffect } from "react";
 
 import { useCallback } from "react";
-import { TaskRegistry } from "@/lib/Workflow/task/registry";
+import { TaskRegistry } from "@/lib/workflow/task/registry";
 import DeletableEdge from "./edges/DeletableEdge";
 import { CreateFlowNode } from "@/lib/workflow/createFlowNode";
 
@@ -129,7 +128,7 @@ function FlowEditor({ workflow }: { workflow: Workflow }) {
         if (visited.has(node.id)) return false;
         visited.add(node.id);
 
-        for (const outger of getOutgoers(node, nodes, edges)) {
+        for (const outgoer of getOutgoers(node, nodes, edges)) {
           if (outgoer.id === connection.source) return true;
           if (hasCycle(outgoer, visited)) return true;
         }

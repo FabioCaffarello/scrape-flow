@@ -15,7 +15,7 @@ export type Environment = {
   >;
 };
 
-type ExecutionEnvironment<T extends WorkflowTask> = {
+export type ExecutionEnvironment<T extends WorkflowTask> = {
   getInput(name: T["inputs"][number]["name"]): string;
   setOutput(name: T["outputs"][number]["name"], value: string): void;
 

@@ -10,10 +10,11 @@ import {
   Loader2Icon,
   WorkflowIcon,
 } from "lucide-react";
-import ExecutionStatusBadge from "./ExecutionStatusBadge";
+import ExecutionPhaseStatus from "@/types/workflow";
 import { LogLevel } from "@/types/log";
 import { ExecutionLog } from "@prisma/client";
 import { Input } from "@/components/ui/input";
+import PhaseStatusBadge from "./PhaseStatusBadge";
 import { GetWorkflowPhaseDetails } from "@/actions/workflows/getWorkflowPhaseDetails";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -32,6 +33,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+import { useEffect } from "react";
 import {
   Table,
   TableBody,
@@ -77,10 +79,10 @@ export default function ExecutionViewer({
       return;
     }
 
-    const phaseToSelect = phases.toSorted((a, b) =>
-      a.completedAt! > b.completedAt! ? -1 : 1,
-    )[0];
-    setSelectedPhase(phaseToSelect.id);
+    // const phaseToSelect = phases.toSorted((a, b) =>
+    //   a.completedAt! > b.completedAt! ? -1 : 1,
+    // )[0];
+    // setSelectedPhase(phaseToSelect.id);
   }, [query.data?.phases, isRunning, setSelectedPhase]);
 
   const duration = DatesToDurationString(
@@ -152,9 +154,7 @@ export default function ExecutionViewer({
                 <Badge variant={"outline"}>{index + 1}</Badge>
                 <p className="font-semibold">{phase.name}</p>
               </div>
-              <ExecutionStatusBadge
-                status={phase.status as ExecutionPhaseStatus}
-              />
+              <PhaseStatusBadge status={phase.status as ExecutionPhaseStatus} />
             </Button>
           ))}
         </div>
@@ -247,7 +247,7 @@ function ParameterViewer({
   paramsJson,
 }: {
   title: string;
-  subtitle: string;
+  subTitle: string;
   paramsJson: string | null;
 }) {
   const params = paramsJson ? JSON.parse(paramsJson) : undefined;

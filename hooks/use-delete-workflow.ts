@@ -4,13 +4,13 @@ import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 
-import { deleteWorkflow } from "@/actions/workflows";
+import { DeleteWorkflow } from "@/actions/workflows/deleteWorkflow";
 
 const useDeleteWorkflow = ({ workflowId }: { workflowId: string }) => {
   const [textConfirm, setTextConfirm] = useState<string>("");
 
   const deleteMutation = useMutation({
-    mutationFn: deleteWorkflow,
+    mutationFn: DeleteWorkflow,
     onSuccess: () => {
       toast.success("Workflow deleted successfully", { id: workflowId });
       setTextConfirm("");
