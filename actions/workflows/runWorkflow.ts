@@ -5,6 +5,7 @@ import {
   FlowToExecutionPlan,
   WorkflowExecutionPlan,
 } from "@/lib/workflow/executionPlan";
+import { ExecuteWorkflow } from "@/lib/workflow/executeWorkflow";
 import { redirect } from "next/navigation";
 import { TaskRegistry } from "@/lib/workflow/task/registry";
 import {
@@ -57,6 +58,7 @@ export async function RunWorkflow(form: {
       status: WorkflowExecutionStatus.PENDING,
       startedAt: new Date(),
       trigger: WorkflowExecutionTrigger.MANUAL,
+      definition: flowDefinition,
       phases: {
         create: executionPlan.flatMap((phase) => {
           return phase.nodes.flatMap((node) => {
@@ -80,5 +82,6 @@ export async function RunWorkflow(form: {
     throw new Error("Failed to create workflow execution");
   }
 
+  ExecuteWorkflow(execution.id); // run this in the background
   redirect(`/workflow/run/${workflowId}/${execution.id}`);
 }
