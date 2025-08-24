@@ -21,7 +21,7 @@ export default function ExecutionViewerPage({
       <section className="flex h-full overflow-auto">
         <Suspense
           fallback={
-            <div clasName="flex w-full items-center justify-center">
+            <div className="flex w-full items-center justify-center">
               <Loader2Icon className="h-10 w-10 animate-spin stroke-primary" />
             </div>
           }

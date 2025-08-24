@@ -44,7 +44,9 @@ export async function ExecuteWorkflow(executionId: string) {
       phase,
       environment,
       edges,
+      execution.workflowId
     );
+    creditsConsumed += phaseExecution.creditsConsumed;
     if (!phaseExecution.success) {
       executionFalied = true;
       break;
@@ -137,6 +139,7 @@ async function executeWorkflowPhase(
   phase: ExecutionPhase,
   environment: Environment,
   edges: Edge[],
+  workflowId: string,
 ) {
   const logCollector: LogCollector = createLogCollector();
   const startedAt = new Date();
@@ -153,14 +156,17 @@ async function executeWorkflowPhase(
   });
 
   const creditsRequired = TaskRegistry[node.data.type].credits;
-  console.log(`Executing phase ${phase.name} with credits: ${creditsRequired}`);
 
-  // TODO: consume credits
-  let success = await executePhase(phase, node, environment, logCollector);
+  let success = await incrementCredits(workflowId, creditsRequired, logCollector);
+  let creditsConsumed = success ? creditsRequired : 0;
+  if (success) {
+    // we can execute the phase since the credits consumed was registered
+    success = await executePhase(phase, node, environment, logCollector);
+  }
 
   const outputs = environment.phases[node.id].outputs;
-  await finalizePhase(phase.id, success, outputs, logCollector);
-  return { success };
+  await finalizePhase(phase.id, success, outputs, logCollector, creditsConsumed);
+  return { success, creditsConsumed };
 }
 
 async function finalizePhase(
@@ -168,6 +174,7 @@ async function finalizePhase(
   success: boolean,
   outputs: any,
   logCollector: LogCollector,
+  creditsConsumed: number,
 ) {
   const finalStatus = success
     ? ExecutionPhaseStatus.COMPLETED
@@ -181,6 +188,7 @@ async function finalizePhase(
       status: finalStatus,
       completedAt: new Date(),
       outputs: JSON.stringify(outputs),
+      creditsConsumed,
       logs: {
         createMany: {
           data: logCollector.getAll().map((log) => ({
@@ -273,4 +281,17 @@ async function cleanupEnvironment(environment: Environment) {
   }
   environment.browser = undefined;
   environment.page = undefined;
+}
+
+async function incrementCredits(workflowId: string, amount: number, logCollector: LogCollector): Promise<boolean> {
+  try {
+    await prisma.workflowBalance.update({
+      where: { workflowId: workflowId },
+      data: { credits: { increment: amount } },
+    });
+    return true;
+  } catch (error) {
+    logCollector.error("error to register credits into workflowBalance");
+    return false;
+  }
 }

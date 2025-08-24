@@ -10,7 +10,7 @@ import {
   Loader2Icon,
   WorkflowIcon,
 } from "lucide-react";
-import ExecutionPhaseStatus from "@/types/workflow";
+import { ExecutionPhaseStatus } from "@/types/workflow";
 import { LogLevel } from "@/types/log";
 import { ExecutionLog } from "@prisma/client";
 import { Input } from "@/components/ui/input";
@@ -42,6 +42,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import ReactCountUpWrapper from "@/components/ReactCountUpWrapper";
 
 type ExecutionData = Awaited<ReturnType<typeof GetWorkflowExecutionWithPhases>>;
 
@@ -73,7 +74,7 @@ export default function ExecutionViewer({
     if (isRunning) {
       // select the last executed phase
       const phaseToSelect = phases.toSorted((a, b) =>
-        a.startedAt! > b.startedAt! ? -1 : 1,
+        a.startedAt! > b.startedAt! ? -1 : 1
       )[0];
       setSelectedPhase(phaseToSelect.id);
       return;
@@ -87,7 +88,7 @@ export default function ExecutionViewer({
 
   const duration = DatesToDurationString(
     query.data?.completedAt,
-    query.data?.startedAt,
+    query.data?.startedAt
   );
 
   const creditsConsumed = GetPhasesTotalCost(query.data?.phases ?? []);
@@ -99,7 +100,14 @@ export default function ExecutionViewer({
           <ExecutionLabel
             icon={CircleDashedIcon}
             label="Status"
-            value={query.data?.status}
+            value={
+              <div className="font-semibold capitalize flex gap-2 items-center">
+                <PhaseStatusBadge
+                  status={query.data?.status as ExecutionPhaseStatus}
+                />
+                <span>{query.data?.status}</span>
+              </div>
+            }
           />
           <ExecutionLabel
             icon={CalendarIcon}
@@ -128,7 +136,7 @@ export default function ExecutionViewer({
           <ExecutionLabel
             icon={CoinsIcon}
             label="Credits consumed"
-            value={creditsConsumed}
+            value={<ReactCountUpWrapper value={creditsConsumed} />}
           />
         </div>
         <Separator />
@@ -185,7 +193,7 @@ export default function ExecutionViewer({
                   <CoinsIcon size={18} className="stroke-muted-foreground" />
                   <span>Credits</span>
                 </div>
-                <span>TODO</span>
+                <span>{phaseDetails.data.creditsConsumed}</span>
               </Badge>
               <Badge variant="outline" className="space-x-4">
                 <div className="flex items-center gap-1">
@@ -195,7 +203,7 @@ export default function ExecutionViewer({
                 <span>
                   {DatesToDurationString(
                     phaseDetails.data.completedAt,
-                    phaseDetails.data.startedAt,
+                    phaseDetails.data.startedAt
                   ) || "-"}
                 </span>
               </Badge>
@@ -322,7 +330,7 @@ function LogViewer({ logs }: { logs: ExecutionLog[] | undefined }) {
                     (log.logLevel as LogLevel) === "error" &&
                       "text-destructive",
                     (log.logLevel as LogLevel) === "warning" && "text-warning",
-                    (log.logLevel as LogLevel) === "info" && "text-primary",
+                    (log.logLevel as LogLevel) === "info" && "text-primary"
                   )}
                 >
                   {log.logLevel}

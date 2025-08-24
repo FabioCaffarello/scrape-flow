@@ -9,12 +9,8 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { usePathname } from "next/navigation";
 import { buttonVariants } from "@/components/ui/button";
-import {
-  CoinsIcon,
-  HomeIcon,
-  Layers2Icon,
-  ShieldCheckIcon,
-} from "lucide-react";
+import { CoinsIcon, HomeIcon, Layers2Icon } from "lucide-react";
+import WorkflowConsumedCreditsBadge from "@/components/WorkflowConsumedCreditsBadge";
 
 const routes = [
   {
@@ -27,17 +23,25 @@ const routes = [
     label: "Workflows",
     icon: Layers2Icon,
   },
+  {
+    href: "billing",
+    label: "Billing",
+    icon: CoinsIcon,
+  },
 ];
 function DesktopSidebar() {
   const pathname = usePathname();
   const activeRoute =
     routes.find(
-      (route) => route.href.length > 0 && pathname.includes(route.href),
+      (route) => route.href.length > 0 && pathname.includes(route.href)
     ) || routes[0];
   return (
     <div className="relative hidden h-screen w-full min-w-[280px] max-w-[280px] border-separate overflow-hidden border-r-2 bg-primary/5 text-muted-foreground dark:bg-secondary/30 dark:text-foreground md:block">
       <div className="border-separate gap-2 border-b-[1px] p-4 flex-center">
         <Logo />
+      </div>
+      <div className="p-2">
+        <WorkflowConsumedCreditsBadge />
       </div>
       <div className="flex flex-col p-2">
         {routes.map((route) => (
@@ -66,7 +70,7 @@ export function MobileSidebar() {
 
   const activeRoute =
     routes.find(
-      (route) => route.href.length > 0 && pathname.includes(route.href),
+      (route) => route.href.length > 0 && pathname.includes(route.href)
     ) || routes[0];
   return (
     <div className="block border-separate bg-background md:hidden">
@@ -82,6 +86,7 @@ export function MobileSidebar() {
             side={"left"}
           >
             <Logo />
+            <WorkflowConsumedCreditsBadge />
             <div className="flex flex-col gap-1">
               {routes.map((route) => (
                 <Link
