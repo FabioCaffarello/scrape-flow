@@ -14,7 +14,7 @@ import WorkflowConsumedCreditsBadge from "@/components/WorkflowConsumedCreditsBa
 
 const routes = [
   {
-    href: "",
+    href: "/",
     label: "Home",
     icon: HomeIcon,
   },

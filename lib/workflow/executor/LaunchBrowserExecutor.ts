@@ -26,7 +26,7 @@ export async function LaunchBrowserExecutor(
   try {
     const websiteUrl = environment.getInput("Website Url");
     const browser = await puppeteer.launch({
-      headless: false, // for testing
+      headless: true, // for testing
       args: ["--proxy-server=brd.superproxy.io:33335"]
     });
 
