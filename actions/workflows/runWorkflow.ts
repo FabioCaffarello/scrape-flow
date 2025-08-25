@@ -1,22 +1,17 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
-import {
-  FlowToExecutionPlan,
-  WorkflowExecutionPlan,
-} from "@/lib/workflow/executionPlan";
+import { FlowToExecutionPlan } from "@/lib/workflow/executionPlan";
 import { ExecuteWorkflow } from "@/lib/workflow/executeWorkflow";
 import { redirect } from "next/navigation";
 import { TaskRegistry } from "@/lib/workflow/task/registry";
 import {
-  WorkflowExecutionPlanPhase,
+  WorkflowExecutionPlan,
   WorkflowExecutionStatus,
   ExecutionPhaseStatus,
   WorkflowExecutionTrigger,
   WorkflowStatus,
 } from "@/types/workflow";
-import { Edge } from "@xyflow/react";
-import { AppNode } from "@/types/appNode";
 
 export async function RunWorkflow(form: {
   workflowId: string;
@@ -54,14 +49,13 @@ export async function RunWorkflow(form: {
     if (result.error) {
       throw new Error("flow definition is not valid");
     }
-  
+
     if (!result.executionPlan) {
       throw new Error("no execution plan could not be generated");
     }
-  
+
     executionPlan = result.executionPlan;
   }
-
 
   const execution = await prisma.workflowExecution.create({
     data: {

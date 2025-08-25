@@ -16,7 +16,7 @@ import { TaskRegistry } from "@/lib/workflow/task/registry";
 import { ExecutionPhase } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 
-export async function ExecuteWorkflow(executionId: string) {
+export async function ExecuteWorkflow(executionId: string, nextRunAt?: Date) {
   const execution = await prisma.workflowExecution.findUnique({
     where: { id: executionId },
     include: {
@@ -33,7 +33,7 @@ export async function ExecuteWorkflow(executionId: string) {
 
   const environment = { phases: {} };
 
-  await initializeWorkflowExecution(execution.id, execution.workflowId);
+  await initializeWorkflowExecution(execution.id, execution.workflowId, nextRunAt);
   await initializePhasesStatuses(execution);
 
   let creditsConsumed = 0;
@@ -66,6 +66,7 @@ export async function ExecuteWorkflow(executionId: string) {
 async function initializeWorkflowExecution(
   executionId: string,
   workflowId: string,
+  nextRunAt?: Date
 ) {
   await prisma.workflowExecution.update({
     where: { id: executionId },
@@ -82,6 +83,7 @@ async function initializeWorkflowExecution(
       lastRunAt: new Date(),
       lastRunStatus: WorkflowExecutionStatus.RUNNING,
       lastRunId: executionId,
+      ...(nextRunAt && { nextRunAt }),
     },
   });
 }
@@ -210,6 +212,7 @@ async function executePhase(
 ): Promise<boolean> {
   const runFn = ExecutorRegistry[node.data.type];
   if (!runFn) {
+    logCollector.error(`No executor found for task type: ${node.data.type}`);
     return false;
   }
 
@@ -274,13 +277,13 @@ function createExecutionEnvironment(
 }
 
 async function cleanupEnvironment(environment: Environment) {
-  if (environment.browser) {
-    await environment.browser
-      .close()
-      .catch((error) => console.error("can not close browser, reason:", error));
-  }
-  environment.browser = undefined;
-  environment.page = undefined;
+  // if (environment.browser) {
+  //   await environment.browser
+  //     .close()
+  //     .catch((error) => console.error("can not close browser, reason:", error));
+  // }
+  // environment.browser = undefined;
+  // environment.page = undefined;
 }
 
 async function incrementCredits(workflowId: string, amount: number, logCollector: LogCollector): Promise<boolean> {

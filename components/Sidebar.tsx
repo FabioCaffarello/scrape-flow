@@ -3,7 +3,7 @@
 import React from "react";
 import Logo from "@/components/Logo";
 import Link from "next/link";
-import { MenuIcon } from "lucide-react";
+import { MenuIcon, ShieldCheckIcon } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -22,6 +22,11 @@ const routes = [
     href: "workflows",
     label: "Workflows",
     icon: Layers2Icon,
+  },
+  {
+    href: "credentials",
+    label: "Credentials",
+    icon: ShieldCheckIcon,
   },
   {
     href: "billing",

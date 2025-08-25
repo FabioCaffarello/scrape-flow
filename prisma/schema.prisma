@@ -81,3 +81,13 @@ model WorkflowBalance {
   workflowId String @id
   credits    Int    @default(0)
 }
+
+model Credentials {
+  id        String   @id @default(cuid())
+  name      String
+  value     String
+
+  createdAt DateTime @default(now())
+  
+  @@unique([name])
+}

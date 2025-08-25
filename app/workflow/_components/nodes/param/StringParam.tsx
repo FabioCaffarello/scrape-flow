@@ -3,8 +3,7 @@
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { TaskParam } from "@/types/task";
-import { ParamProps } from "@types/appNode";
+import { ParamProps } from "@/types/appNode";
 import { useEffect, useState } from "react";
 
 function StringParam({

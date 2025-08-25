@@ -2,11 +2,12 @@
 
 import { useReactFlow } from "@xyflow/react";
 import { useCallback } from "react";
-import { Input } from "@/components/ui/input";
 import StringParam from "./param/StringParam";
+import SelectParam from "./param/SelectParam";
 import BrowserInstanceParam from "./param/BrowserInstanceParam";
 import { AppNode } from "@/types/appNode";
 import { TaskParam, TaskParamType } from "@/types/task";
+import CredentialsParam from "./param/CredentialsParam";
 
 function NodeParamField({
   param,
@@ -50,6 +51,24 @@ function NodeParamField({
           updateNodeParamValue={updateNodeParamValue}
         />
       );
+    case TaskParamType.SELECT:
+      return (
+        <SelectParam 
+          param={param}
+          value={value}
+          updateNodeParamValue={updateNodeParamValue}
+          disabled={disabled}
+        />
+      )
+    case TaskParamType.CREDENTIAL:
+      return (
+        <CredentialsParam 
+          param={param}
+          value={value}
+          updateNodeParamValue={updateNodeParamValue}
+          disabled={disabled}
+        />
+      )
     default:
       return (
         <div className="w-full">
