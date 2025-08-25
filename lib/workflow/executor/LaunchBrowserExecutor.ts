@@ -25,14 +25,14 @@ export async function LaunchBrowserExecutor(
 ): Promise<boolean> {
   try {
     const websiteUrl = environment.getInput("Website Url");
-    // const browser = await puppeteer.launch({
-    //   headless: false, // for testing
-    //   args: ["--proxy-server=brd.superproxy.io:33335"]
-    // });
-
-    const browser = await puppeteer.connect({
-      browserWSEndpoint: BROWSER_WS
+    const browser = await puppeteer.launch({
+      headless: false, // for testing
+      args: ["--proxy-server=brd.superproxy.io:33335"]
     });
+
+    // const browser = await puppeteer.connect({
+    //   browserWSEndpoint: BROWSER_WS
+    // });
     environment.log.info("Browser started successfully");
     environment.setBrowser(browser);
     const page = await browser.newPage();
