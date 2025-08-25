@@ -277,13 +277,13 @@ function createExecutionEnvironment(
 }
 
 async function cleanupEnvironment(environment: Environment) {
-  // if (environment.browser) {
-  //   await environment.browser
-  //     .close()
-  //     .catch((error) => console.error("can not close browser, reason:", error));
-  // }
-  // environment.browser = undefined;
-  // environment.page = undefined;
+  if (environment.browser) {
+    await environment.browser
+      .close()
+      .catch((error) => console.error("can not close browser, reason:", error));
+  }
+  environment.browser = undefined;
+  environment.page = undefined;
 }
 
 async function incrementCredits(workflowId: string, amount: number, logCollector: LogCollector): Promise<boolean> {
